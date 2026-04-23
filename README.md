@@ -58,11 +58,11 @@ cd ~/Desktop
 Lade das Repository herunter:
 
 ```bash
-git clone <REPO-URL-EINFUEGEN> transkript-worker
+git clone https://github.com/lmrth24/Transkript-Worker.git transkript-worker
 cd transkript-worker
 ```
 
-(Ersetze `<REPO-URL-EINFUEGEN>` durch die URL, die du aus der Agent Mastery bekommen hast.)
+(Solange das Repository privat ist, musst du vorher bei GitHub eingeloggt sein und von Lea Zugriff auf das Repo bekommen haben.)
 
 ### Schritt 3: Abhängigkeiten installieren
 
