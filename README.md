@@ -10,10 +10,10 @@ Dieser Worker holt automatisch das Transkript eines YouTube-Videos und fügt es 
 
 Bevor du loslegst, besorg dir drei Dinge:
 
-1. **Einen Supadata-Account** (kostenloser Tarif reicht zum Testen)
+1. **Einen Supadata-Account**
    - Geh auf https://supadata.ai und registriere dich
    - Im Dashboard findest du deinen persönlichen **API-Key** — den brauchst du gleich
-   - Der kostenlose Tarif hat ein monatliches Kontingent; für mehr Transkripte gibt's bezahlte Pläne
+   - Der kostenlose Tarif hat **100 Transkript-Abrufe pro Monat**. Für die meisten Kursteilnehmer reicht das locker; für mehr gibt's bezahlte Pläne
 
 2. **Node.js auf deinem Rechner** (Version 22 oder höher)
    - Prüfe, ob du es schon hast: Öffne das Terminal und tippe `node --version`. Wenn eine Zahl größer als `v22.0.0` kommt, bist du fertig.
@@ -62,8 +62,6 @@ git clone https://github.com/lmrth24/Transkript-Worker.git transkript-worker
 cd transkript-worker
 ```
 
-(Solange das Repository privat ist, musst du vorher bei GitHub eingeloggt sein und von Lea Zugriff auf das Repo bekommen haben.)
-
 ### Schritt 3: Abhängigkeiten installieren
 
 Immer noch im `transkript-worker`-Ordner, führe aus:
@@ -74,7 +72,7 @@ npm install
 
 Das dauert ein paar Sekunden und installiert alle benötigten Helfer-Pakete.
 
-### Schritt 4: Deinen Supadata-Key eintragen
+### Schritt 4: Deinen Supadata-Key eintragen (und optional: Status-Update konfigurieren)
 
 Im Projekt-Ordner findest du eine Datei namens `.env.example`. Mach davon eine Kopie und nenne sie `.env`:
 
@@ -93,6 +91,18 @@ Dann öffne die neue `.env`-Datei in einem Texteditor und ersetze den Platzhalte
 ```
 SUPADATA_API_KEY=sd_deinkeyhier1234567890
 ```
+
+**Optional: Status-Update nach dem Transkript**
+
+Wenn du möchtest, dass der Worker nach dem Einfügen des Transkripts den Status der Notion-Seite automatisch ändert (z.B. von „Neu" auf „Transkript da"), trag den exakten Namen der Status-Option in dieselbe `.env` ein:
+
+```
+STATUS_AFTER_TRANSCRIPT=Transkript da
+```
+
+- Lass die Zeile leer (oder lösch sie), wenn du **kein** Status-Update willst.
+- Voraussetzung: Deine Datenbank hat eine Property mit dem Namen `Status` (Typ: Status), und darin existiert eine Option, die **exakt so heißt** wie hier eingetragen (Groß-/Kleinschreibung & Leerzeichen müssen passen).
+- Wenn die Property oder Option fehlt, ignoriert der Worker das Status-Update einfach — das Transkript wird trotzdem eingefügt.
 
 Speichern und schließen.
 
@@ -200,7 +210,7 @@ Wenn du ihn triggerst, läuft Folgendes ab:
 1. Er liest die YouTube-URL aus der Property deiner Notion-Seite
 2. Er fragt bei Supadata das Transkript an (inkl. Sprach-Auto-Erkennung)
 3. Er erstellt einen eingeklappten Toggle-Block **"Transkript"** am Ende der Seite
-4. Er setzt den Status der Seite auf **"Bereit für Tina"** (falls diese Option in deiner Status-Property existiert — sonst ignoriert er das einfach)
+4. Optional: Er setzt den Status der Seite auf den Wert, den du in der `.env` als `STATUS_AFTER_TRANSCRIPT` eingetragen hast (falls diese Option in deiner Status-Property existiert — sonst ignoriert er das einfach)
 
 ---
 
@@ -218,8 +228,8 @@ Das Video hat keine Untertitel (weder manuell noch automatisch generiert). Kommt
 **"Ungültige pageId":**
 Der Agent hat dem Tool keine echte Notion-URL übergeben. Trigger den Agent nochmal — oft klappt's beim zweiten Versuch. Wenn nicht, stell sicher, dass du den oben gezeigten Agent-Prompt genau so übernommen hast.
 
-**Status wird nicht auf "Bereit für Tina" gesetzt:**
-Deine Ressourcen-DB hat entweder keine Status-Property oder keine Option mit genau diesem Namen. Der Worker ignoriert das dann einfach — das Transkript wird trotzdem eingefügt. Wenn du den Status-Flow haben willst, leg die Option "Bereit für Tina" in deiner Status-Property an.
+**Status wird nicht aktualisiert:**
+Entweder hast du `STATUS_AFTER_TRANSCRIPT` in der `.env` leer gelassen (dann macht der Worker absichtlich nichts) — oder deine Ressourcen-DB hat keine Property namens `Status` bzw. keine Option mit genau dem Namen, den du eingetragen hast. Tipp-Check: Groß-/Kleinschreibung und Leerzeichen müssen exakt passen. Wenn du die `.env` änderst, musst du anschließend nochmal `ntn workers env push --yes` ausführen, damit der Worker den neuen Wert bekommt.
 
 ---
 

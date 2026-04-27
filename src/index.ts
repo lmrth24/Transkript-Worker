@@ -215,20 +215,29 @@ worker.tool("fetchTranscript", {
 			}
 		}
 
-		// Status auf "Bereit für Tina" setzen (nur wenn es eine Status-Property gibt)
+		// Status setzen (nur wenn STATUS_AFTER_TRANSCRIPT in .env gesetzt ist und die Status-Property existiert).
+		// Leer lassen oder weglassen = Status-Update wird übersprungen.
+		const statusName = process.env.STATUS_AFTER_TRANSCRIPT?.trim();
 		let statusUpdated = false;
-		try {
-			await notion.pages.update({
-				page_id: normalizedPageId,
-				properties: {
-					Status: { status: { name: "Bereit für Tina" } },
-				},
-			});
-			statusUpdated = true;
-		} catch (e) {
-			console.log(`[Status-Update] Fehler: ${e}`);
+		if (statusName) {
+			try {
+				await notion.pages.update({
+					page_id: normalizedPageId,
+					properties: {
+						Status: { status: { name: statusName } },
+					},
+				});
+				statusUpdated = true;
+			} catch (e) {
+				console.log(`[Status-Update] Fehler: ${e}`);
+			}
 		}
 
-		return `Transkript eingefügt: URL aus Property "${propertyName}", Sprache "${result.lang}", ${transcript.length} Zeichen in ${chunks.length} Absätze(n). Status${statusUpdated ? ' auf "Bereit für Tina" gesetzt' : "-Update fehlgeschlagen"}.`;
+		const statusMsg = !statusName
+			? "kein Status-Update konfiguriert"
+			: statusUpdated
+				? `Status auf "${statusName}" gesetzt`
+				: `Status-Update auf "${statusName}" fehlgeschlagen (Property/Option vorhanden?)`;
+		return `Transkript eingefügt: URL aus Property "${propertyName}", Sprache "${result.lang}", ${transcript.length} Zeichen in ${chunks.length} Absätze(n). ${statusMsg}.`;
 	},
 });

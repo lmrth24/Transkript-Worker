@@ -6,3 +6,8 @@ node_modules/
 workers.*.json
 workers.json
 test.ts
+.DS_Store
+**/.DS_Store
+*.log
+.vscode/
+.idea/
