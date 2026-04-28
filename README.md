@@ -8,20 +8,58 @@ Dieser Worker holt automatisch das Transkript eines YouTube-Videos und fügt es 
 
 ## Was du vorher brauchst
 
-Bevor du loslegst, besorg dir drei Dinge:
+Bevor du loslegst, besorg dir diese drei Dinge. **Bitte arbeite die Reihenfolge wirklich von oben nach unten ab** — wenn du Schritt 2 oder 3 überspringst, wird die spätere Anleitung mit „command not found" abbrechen.
 
-1. **Einen Supadata-Account**
-   - Geh auf https://supadata.ai und registriere dich
-   - Im Dashboard findest du deinen persönlichen **API-Key** — den brauchst du gleich
-   - Der kostenlose Tarif hat **100 Transkript-Abrufe pro Monat**. Für die meisten Kursteilnehmer reicht das locker; für mehr gibt's bezahlte Pläne
+### 1. Einen Supadata-Account
 
-2. **Node.js auf deinem Rechner** (Version 22 oder höher)
-   - Prüfe, ob du es schon hast: Öffne das Terminal und tippe `node --version`. Wenn eine Zahl größer als `v22.0.0` kommt, bist du fertig.
-   - Falls nicht: Auf https://nodejs.org die LTS-Version runterladen und installieren
+- Geh auf https://supadata.ai und registriere dich
+- Im Dashboard findest du deinen persönlichen **API-Key** — den brauchst du gleich
+- Der kostenlose Tarif hat **100 Transkript-Abrufe pro Monat**. Für die meisten Kursteilnehmer reicht das locker; für mehr gibt's bezahlte Pläne
 
-3. **Git** (für den Download aus dem Repository)
-   - Prüfe: `git --version` im Terminal
-   - Falls nicht da: Auf https://git-scm.com runterladen und installieren
+### 2. Node.js (Version 22 oder höher) — **muss vorher installiert sein**
+
+Node.js bringt das Programm `npm` mit, das wir später brauchen, um die Notion CLI zu installieren. Ohne Node.js geht gar nichts.
+
+**Schritt A — prüfen, ob Node schon da ist:**
+
+Öffne das Terminal (auf dem Mac: Cmd+Leertaste, „Terminal" tippen, Enter) und führe aus:
+
+```bash
+node --version
+```
+
+- Wenn eine Zahl wie `v22.x.x` oder `v24.x.x` kommt → super, weiter zu Punkt 3.
+- Wenn `command not found: node` kommt **oder** die Zahl kleiner als `v22` ist → weiter mit Schritt B.
+
+**Schritt B — Node.js installieren:**
+
+1. Geh auf https://nodejs.org
+2. Lade dir die **LTS-Version** runter (großer grüner Button)
+3. Öffne die heruntergeladene Datei und klicke dich durch den Installer (alle Standardeinstellungen sind ok)
+4. **Wichtig: Schließ dein Terminal-Fenster komplett und öffne ein neues.** Sonst kennt das Terminal die frisch installierten Befehle noch nicht — und du bekommst „command not found", obwohl alles installiert ist.
+
+**Schritt C — nochmal prüfen:**
+
+```bash
+node --version
+npm --version
+```
+
+Beide Befehle müssen jetzt eine Versionsnummer anzeigen. Erst dann gehst du weiter.
+
+> **Wenn `npm --version` immer noch „command not found" sagt**, obwohl du Node.js gerade installiert hast: Schließ wirklich **alle** Terminal-Fenster (nicht nur den Tab, sondern das Programm beenden mit Cmd+Q), öffne das Terminal frisch und versuch es nochmal. Das ist der häufigste Stolperstein und hat in 99% der Fälle damit zu tun.
+
+### 3. Git (für den Download des Worker-Codes)
+
+**Prüfen:**
+
+```bash
+git --version
+```
+
+- Wenn eine Versionsnummer kommt → fertig.
+- Wenn nicht: Auf dem Mac öffnet sich beim ersten Aufruf von `git` automatisch ein Dialog, der die „Command Line Developer Tools" installiert. Klick auf **Install** und warte ein paar Minuten. Danach Terminal neu öffnen und `git --version` nochmal probieren.
+- Alternativ: https://git-scm.com runterladen und installieren.
 
 > **Keine Angst vor dem Terminal**: Du musst für diese Einrichtung ein paar Befehle kopieren und einfügen. Das war's. Du musst nichts selbst programmieren.
 
@@ -33,11 +71,19 @@ Bevor du loslegst, besorg dir drei Dinge:
 
 Die Notion CLI (`ntn`) ist das Werkzeug, mit dem du den Worker in deinen Notion-Workspace hochlädst.
 
+> **Voraussetzung:** Du hast den Punkt „Node.js" oben erfolgreich abgeschlossen, d.h. `npm --version` zeigt eine Versionsnummer. Wenn nicht: zurück nach oben und das erst fixen.
+
 Öffne das Terminal und führe aus:
 
 ```bash
 npm install -g ntn
 ```
+
+> Falls hier `EACCES`/`permission denied`-Fehler kommen, führe stattdessen aus:
+> ```bash
+> sudo npm install -g ntn
+> ```
+> und gib dein Mac-Passwort ein, wenn gefragt.
 
 Danach prüfe, ob es geklappt hat:
 
@@ -45,7 +91,7 @@ Danach prüfe, ob es geklappt hat:
 ntn --version
 ```
 
-Sollte eine Versionsnummer anzeigen. Wenn nicht, Terminal einmal neu öffnen und nochmal probieren.
+Sollte eine Versionsnummer anzeigen. Wenn `command not found: ntn` kommt: Terminal komplett schließen (Cmd+Q) und neu öffnen, dann nochmal probieren.
 
 ### Schritt 2: Worker-Projekt herunterladen
 
@@ -216,8 +262,17 @@ Wenn du ihn triggerst, läuft Folgendes ab:
 
 ## Häufige Stolpersteine
 
-**"Command not found: ntn" nach `npm install -g ntn`:**
-Terminal einmal komplett schließen und neu öffnen. Das aktualisiert den Pfad zu frisch installierten Tools.
+**"command not found: npm" oder "command not found: node":**
+Node.js ist entweder nicht installiert oder das Terminal kennt es noch nicht.
+1. Geh zurück zu „Was du vorher brauchst → Punkt 2" und installier Node.js von https://nodejs.org (LTS-Version).
+2. Nach der Installation **alle** Terminal-Fenster schließen (Cmd+Q, nicht nur den Tab) und ein neues öffnen.
+3. `node --version` und `npm --version` müssen beide eine Zahl anzeigen, **bevor** du mit Schritt 1 der Anleitung weitermachst.
+
+**"command not found: ntn" nach `npm install -g ntn`:**
+Terminal einmal komplett schließen (Cmd+Q) und neu öffnen. Das aktualisiert den Pfad zu frisch installierten Tools.
+
+**"EACCES" oder "permission denied" bei `npm install -g`:**
+Versuch's nochmal mit `sudo` davor: `sudo npm install -g ntn`. Du wirst nach deinem Mac-Passwort gefragt — das ist normal.
 
 **"Keine URL in den Properties dieser Seite gefunden":**
 Deine Seite hat keine URL-Property oder die Property ist leer. Leg eine URL-Property an und trag die YouTube-URL ein.
