@@ -79,11 +79,16 @@ Die Notion CLI (`ntn`) ist das Werkzeug, mit dem du den Worker in deinen Notion-
 npm install -g ntn
 ```
 
-> Falls hier `EACCES`/`permission denied`-Fehler kommen, führe stattdessen aus:
+> **Wenn dabei ein `EACCES`- oder `permission denied`-Fehler erscheint** (passiert auf macOS häufig, weil npm standardmäßig in einen Systemordner schreiben will), richtest du einmalig ein eigenes npm-Verzeichnis ein, in das du ohne Admin-Rechte schreiben darfst. Dafür führst du nacheinander diese vier Befehle aus:
+>
 > ```bash
-> sudo npm install -g ntn
+> mkdir -p ~/.npm-global
+> npm config set prefix '~/.npm-global'
+> echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.zshrc
+> source ~/.zshrc
 > ```
-> und gib dein Mac-Passwort ein, wenn gefragt.
+>
+> Danach **`npm install -g ntn` nochmal ausführen** — diesmal sollte es ohne Fehler durchlaufen.
 
 Danach prüfe, ob es geklappt hat:
 
@@ -132,11 +137,27 @@ cp .env.example .env
 copy .env.example .env
 ```
 
-Dann öffne die neue `.env`-Datei in einem Texteditor und ersetze den Platzhalter durch deinen echten Supadata-Key:
+Jetzt musst du die `.env`-Datei öffnen und deinen Key eintragen. Weil die Datei mit einem Punkt anfängt, blendet der Finder sie standardmäßig aus — der einfachste Weg ist deshalb, sie direkt im Terminal mit dem Mini-Editor `nano` zu bearbeiten:
+
+```bash
+nano .env
+```
+
+Im Terminal-Fenster siehst du jetzt den Inhalt der Datei. Mit den Pfeiltasten kannst du dich bewegen. Ersetze den Platzhalter `dein_supadata_api_key_hier_einfuegen` durch deinen echten Supadata-Key, sodass die Zeile so aussieht:
 
 ```
 SUPADATA_API_KEY=sd_deinkeyhier1234567890
 ```
+
+**Speichern & schließen in nano:**
+1. **Strg + O** drücken (Buchstabe O, nicht Null) → unten fragt nano nach dem Dateinamen, einfach **Enter** drücken
+2. **Strg + X** drücken → nano schließt sich, du bist zurück im normalen Terminal
+
+> Falls dir nano zu fummelig ist, kannst du die Datei stattdessen in einem grafischen Editor öffnen, z.B. mit:
+> ```bash
+> open -a TextEdit .env
+> ```
+> Speichern dann mit Cmd+S, Fenster zumachen.
 
 **Optional: Status-Update nach dem Transkript**
 
@@ -272,7 +293,16 @@ Node.js ist entweder nicht installiert oder das Terminal kennt es noch nicht.
 Terminal einmal komplett schließen (Cmd+Q) und neu öffnen. Das aktualisiert den Pfad zu frisch installierten Tools.
 
 **"EACCES" oder "permission denied" bei `npm install -g`:**
-Versuch's nochmal mit `sudo` davor: `sudo npm install -g ntn`. Du wirst nach deinem Mac-Passwort gefragt — das ist normal.
+npm darf standardmäßig nicht in den Systemordner schreiben. Lösung: einmalig ein eigenes npm-Verzeichnis einrichten:
+
+```bash
+mkdir -p ~/.npm-global
+npm config set prefix '~/.npm-global'
+echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.zshrc
+source ~/.zshrc
+```
+
+Danach `npm install -g ntn` nochmal ausführen.
 
 **"Keine URL in den Properties dieser Seite gefunden":**
 Deine Seite hat keine URL-Property oder die Property ist leer. Leg eine URL-Property an und trag die YouTube-URL ein.
