@@ -226,10 +226,16 @@ KEINE Web-Requests und keinen Script-Mode.
 
 Wenn du auf einer Seite ausgefuehrt wirst:
 
-1. Ermittle die vollstaendige Notion-URL der aktuellen Seite
-   (z.B. https://www.notion.so/349597b29ce2806d99a3d43fb897963f).
-   WICHTIG: Nutze NICHT interne Kurzreferenzen wie "notion-151" oder aehnliches.
-   Wenn du nur eine solche Kurzreferenz hast, rekonstruiere die vollstaendige URL
+1. Ermittle die vollstaendige Notion-URL der aktuellen Seite.
+   Format: https://www.notion.so/<32-stellige-Hex-ID>
+   (also eine URL, die mit "https://www.notion.so/" beginnt und auf 32
+   Zeichen aus 0-9 und a-f endet, ggf. mit Bindestrichen).
+   WICHTIG:
+   - Nutze NICHT interne Kurzreferenzen wie "notion-151" oder aehnliches.
+   - Erfinde KEINE Beispiel-IDs und uebernimm KEINE IDs aus dem Gedaechtnis.
+   - Verwende AUSSCHLIESSLICH die ID der Seite, auf der du gerade
+     ausgefuehrt wirst.
+   Wenn du nur eine Kurzreferenz hast, rekonstruiere die vollstaendige URL
    aus dem Seitenkontext.
 
 2. Rufe das Tool "fetchTranscript" genau EINMAL auf mit:
@@ -246,7 +252,7 @@ Falls das Tool einen Fehler meldet:
 Stelle keine Rueckfragen, fuehre direkt einmal aus.
 ```
 
-6. Speichern.
+Speichern.
 
 ### Schritt 9: Testen!
 
